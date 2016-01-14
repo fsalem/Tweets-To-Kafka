@@ -1,4 +1,4 @@
-
+package prop;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -7,9 +7,9 @@ import java.io.IOException;
 import java.util.Properties;
 
 public class PropertiesStack {
-	private static final String FILE_NAME="params.properties";
+	private static final String FILE_NAME = "params.properties";
 	private static final Properties properties;
-	static{
+	static {
 		properties = new Properties();
 		try {
 			properties.load(new FileReader(new File(FILE_NAME)));
@@ -19,38 +19,40 @@ public class PropertiesStack {
 			e.printStackTrace();
 		}
 	}
+
 	private PropertiesStack() {
 	}
-	
-	public static String getKafkaBootstrapServers(){
+
+	public static String getKafkaBootstrapServers() {
 		return properties.getProperty("bootstrap.servers");
 	}
-	
-	public static String getZookeeperConnect(){
+
+	public static String getZookeeperConnect() {
 		return properties.getProperty("zookeeper.connect");
 	}
-	
-	public static String getKafkaGroupId(){
+
+	public static String getKafkaTopic() {
+		return properties.getProperty("kafka.topic");
+	}
+
+	public static String getKafkaGroupId() {
 		return properties.getProperty("group.id");
 	}
-	
-	public static String getTwitterAPIKey(){
+
+	public static String getTwitterAPIKey() {
 		return properties.getProperty("twitter.api.key");
 	}
-	
-	public static String getTwitterAPISecret(){
+
+	public static String getTwitterAPISecret() {
 		return properties.getProperty("twitter.api.secret");
 	}
-	
-	public static String getTwitterAccessToken(){
+
+	public static String getTwitterAccessToken() {
 		return properties.getProperty("twitter.access.token");
 	}
-	
-	public static String getTwitterAccessTokenSecret(){
+
+	public static String getTwitterAccessTokenSecret() {
 		return properties.getProperty("twitter.access.token.secret");
 	}
-	
-	
-	
-	
+
 }

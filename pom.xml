@@ -23,5 +23,11 @@
 			<artifactId>hbc-core</artifactId> <!-- or hbc-twitter4j -->
 			<version>2.2.0</version> <!-- or whatever the latest version is -->
 		</dependency>
+		<dependency>
+			<groupId>org.apache.kafka</groupId>
+			<artifactId>kafka-clients</artifactId>
+			<version>0.9.0.0</version>
+		</dependency>
+
 	</dependencies>
 </project>

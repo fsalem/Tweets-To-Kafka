@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import kafka.KafkaProducerObject;
+import prop.PropertiesStack;
+
 import com.google.common.collect.Lists;
 import com.twitter.hbc.ClientBuilder;
 import com.twitter.hbc.core.Client;
@@ -18,6 +21,18 @@ import com.twitter.hbc.httpclient.auth.OAuth1;
 
 public class TwitterStream {
 
+	private static String clean(final String msg){
+		int ind,ind1,ind2=-1,ind3=-1,spaceInd;
+		StringBuffer buffer = new StringBuffer(msg);
+		while ((ind1 = buffer.indexOf("\\u")) != -1 || (ind2 = buffer.indexOf("http:")) != -1 || (ind3 = buffer.indexOf("https:")) != -1){
+			ind = ind1 !=-1 ? ind1 : (ind2 != -1 ? ind2 : ind3);
+			spaceInd =buffer.indexOf(" ", ind); 
+			if (spaceInd == -1)buffer.delete(ind, buffer.length());
+			else buffer.delete(ind, spaceInd);
+		}
+		return buffer.toString().trim();
+	}
+	
 	public static void main(String[] args) throws InterruptedException {
 		/**
 		 * Set up your blocking queues: Be sure to size these properly based on
@@ -60,27 +75,30 @@ public class TwitterStream {
 																									// events
 
 		Client hosebirdClient = builder.build();
+		
 		// Attempts to establish a connection.
 		hosebirdClient.connect();
 		String msg, tweet;
 		int startInd, endInd;
-		//KafkaProducerObject kafkaProducerInstance = new KafkaProducerObject();
+		KafkaProducerObject kafkaProducerInstance = new KafkaProducerObject();
 		int i=0;
 		while (!hosebirdClient.isDone()) {
-			if (i ==1)break;
-			i++;
+			//if (i ==50)break;
+			//i++;
 			msg = msgQueue.take();
+			
 			startInd = msg.indexOf(",\"text\":\"");
 			endInd = msg.indexOf("\",\"source\":");
 			if (startInd == -1 || endInd == -1)
 				continue;
 
-			tweet = msg.substring(startInd, endInd).substring(9);
-			//kafkaProducerInstance.send(tweet,"tweets");
-			System.out.println(tweet);
+			tweet = clean(msg.substring(startInd, endInd).substring(9).replace("\n", " "));
+			
+			kafkaProducerInstance.send(tweet,PropertiesStack.getKafkaTopic());
+			//System.out.println(tweet);
 			// profit();
 		}
-		//kafkaProducerInstance.close();
+		kafkaProducerInstance.close();
 
 	}
 
