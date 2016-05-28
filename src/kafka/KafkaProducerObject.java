@@ -1,7 +1,6 @@
 package kafka;
 
 import java.util.Properties;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import org.apache.kafka.clients.producer.KafkaProducer;
@@ -15,7 +14,7 @@ public class KafkaProducerObject extends KafkaProducer<String, String> {
 	static{
 		props.put("bootstrap.servers", PropertiesStack.getKafkaBootstrapServers());
 		props.put("acks", "all");
-		props.put("retries", 0);
+		props.put("retries", Integer.MAX_VALUE);
 		props.put("batch.size", 16384);
 		props.put("linger.ms", 1);
 		props.put("buffer.memory", 33554432);
@@ -28,15 +27,15 @@ public class KafkaProducerObject extends KafkaProducer<String, String> {
 	public void send(String message,String topic) {
 		Future<RecordMetadata> result = send(new ProducerRecord<String, String>(topic, message));
 		
-		try {
-			System.out.println(result.get().offset());
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ExecutionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		try {
+//			System.out.println(result.get().offset());
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (ExecutionException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		
 	}
 }
